@@ -5,11 +5,21 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+  const MyApp({super.key}); 
+  //コンストラクが const になると、Flutter は再描画をスキップして負荷軽減できる
+  //ので、表示が変わらない固定UIは const でよい
+  /* Flutterのウィジェットは**「Widgetツリーの中で識別」**される必要があります。そのために Key を使います。
+  super.key は、親クラス（StatelessWidget）の key パラメータに渡す処理です。
+  これがあると、Flutterが「このウィジェットは同じものかどうか」を判断しやすくなります。
+  この引数はFlutterフレームワーク側が自動で渡すので、開発者は渡さなくていい
+   */
   // This widget is the root of your application.
+  // build は Flutter によって描画されるときに使われ、ツリー構造を return している
   @override
   Widget build(BuildContext context) {
+    /* BuildContext は Widgetの「現在地」や「環境情報」へのアクセス手段
+    build() メソッド内で Flutter フレームワークが自動で渡してくれる。
+    これがあるおかげで、親の情報を取得したり、ページ遷移をしたり、デバイス情報を読んだりできるようになります。 */
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -28,15 +38,18 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Flutter Demo Home Page3'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title}); 
+  //{}で囲むことで名前付き引数になる = 呼び出し時に、title などの名前を指定して引数を指定する。順不同にできる。
+  // StatefulWidget でも const でいいのは、あくまでこれはラッパーだから。
+  // 実際の状態管理は _MyHomePageState クラスが行ってる
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -50,7 +63,9 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => _MyHomePageState(); 
+  // => は簡易的な関数宣言。MyHomePage の 状態を実際に管理する処理の中身は _MyHomePageState() です、というオーバーライドをしてる。
+  // createState 自身は Flutter 側によって自動で呼び出される
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -63,6 +78,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // so that the display can reflect the updated values. If we changed
       // _counter without calling setState(), then the build method would not be
       // called again, and so nothing would appear to happen.
+      // setState の中に入れることで、_incrementCounter が叩かれたときに自動で再描画される（build が自動で呼ばれる）
       _counter++;
     });
   }
@@ -76,6 +92,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
+      // scaffold はタイトルバーとボディとアクションボタンがある標準的な Material UI の画面構成を提供する（ツリー）クラス
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
@@ -104,6 +121,11 @@ class _MyHomePageState extends State<MyHomePage> {
           // wireframe for each widget.
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            /*
+            [] → Dartのリスト（配列）を作っている
+            <Widget> → リスト内の要素がすべて Widget 型であることを明示
+            children: → Column や Row などが複数のウィジェットを受け取るプロパティ
+            */
             const Text('You have pushed the button this many times:'),
             Text(
               '$_counter',
@@ -117,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+      //↑ コンマを残しておくと、VS Code の自動整形（改行や自動コメント）が働くよ、という意味
     );
   }
 }
