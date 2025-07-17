@@ -5,6 +5,9 @@ on:
     branches:
       - main  # ← main ブランチに push されたら実行
 
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -21,7 +24,7 @@ jobs:
       run: flutter pub get
 
     - name: Build Web
-      run: flutter build web --base-href="/flutter_application_sample/"
+      run: flutter build web --base-href="/flutter_application_sample/" --pwa-strategy=offline-first
 
     - name: Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
